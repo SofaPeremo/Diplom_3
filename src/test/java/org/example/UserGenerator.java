@@ -35,20 +35,6 @@ public class UserGenerator {
         this.accessToken = response.extract().path("accessToken");
     }
 
-    public String loginAndGetToken(String email, String password) {
-        User loginUser = new User(email, password, "");
-
-        return given()
-                .baseUri(BASE_URL)
-                .header("Content-type", "application/json")
-                .body(loginUser)
-                .post("/api/auth/login")
-                .then()
-                .statusCode(200)
-                .extract()
-                .path("accessToken");
-    }
-
     public void deleteUser(String token) {
         given()
                 .baseUri(BASE_URL)

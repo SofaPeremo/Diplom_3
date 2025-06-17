@@ -3,7 +3,6 @@ package org.example;
 import com.github.javafaker.Faker;
 
 import io.qameta.allure.Step;
-import org.api.User;
 import pages.LoginPage;
 import pages.MainPage;
 import org.junit.After;
@@ -24,10 +23,6 @@ public class RegistrationTests {
     private LoginPage loginPage;
     private RegisterPage registerPage;
     private final Faker faker = new Faker();
-    private UserGenerator userGenerator;
-    private String accessToken;
-    private String userEmail;
-    private String userPassword;
 
     @Before
     @Step("Открытие браузера и инициализация драйвера")
@@ -37,7 +32,6 @@ public class RegistrationTests {
         mainPage = new MainPage(driver);
         registerPage = new RegisterPage(driver);
         loginPage = new LoginPage(driver);
-        userGenerator = new UserGenerator();
         mainPage.open();
     }
 
@@ -45,16 +39,9 @@ public class RegistrationTests {
     @Step("Тест успешной регистрации пользователя")
     public void testSuccessfulRegistration() {
 
-        userEmail = faker.internet().emailAddress();
-        userPassword = faker.internet().password(6, 16);
-        String userName = faker.name().firstName();
-
-        mainPage.registerUser(userName, userEmail, userPassword);
         registerPage.clickRegistrationButton();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
         Assert.assertTrue("Успешная регистрация", loginPage.isLoginFormDisplayed());
-
-        accessToken = userGenerator.loginAndGetToken(userEmail, userPassword);
     }
 
     @Test
@@ -74,9 +61,6 @@ public class RegistrationTests {
     @After
     @Step("Закрытие браузера")
     public void tearDown() {
-        if (accessToken != null) {
-            userGenerator.deleteUser(accessToken);
-        }
         driver.quit();
     }
 }
